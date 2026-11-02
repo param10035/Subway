@@ -4,3 +4,70 @@
 .craver-item{grid-template-columns:minmax(230px,1fr) 126px 126px;gap:0}.signature-option{height:72px;display:flex;align-items:center;justify-content:space-between;gap:8px;border-left:1px solid #edf0ec;padding-left:12px}.signature-option>div{display:flex;flex-direction:column;align-items:center;min-width:50px}.signature-option>div strong{font-size:14px;color:#303632}.signature-option>div span{font-size:9px;color:#969d97;margin-top:4px}.signature-option .store-add,.signature-option .quantity-control{width:64px}.signature-option .store-add{font-size:10px}.size-heading{width:252px;justify-self:end;margin-right:0;display:grid}.simple-item{grid-template-columns:minmax(0,1fr) 140px 92px}.simple-item .item-copy{text-align:left;padding-right:20px}.simple-item .single-price{text-align:right;padding-right:36px}.craver-item,.simple-item{grid-template-columns:minmax(0,1fr) 140px 92px}@media(max-width:700px){.signature-item{grid-template-columns:minmax(150px,1fr) 112px 112px}.signature-option{padding-left:7px;gap:4px}.signature-option .store-add,.signature-option .quantity-control{width:58px}.size-heading{width:224px}.simple-item,.craver-item{grid-template-columns:minmax(140px,1fr) 100px 78px}.single-price{padding-right:10px}}@media(max-width:520px){.signature-item{grid-template-columns:minmax(110px,1fr) 86px 86px}.signature-option{height:68px;display:flex;flex-direction:column;justify-content:center;padding-left:3px}.signature-option>div{min-width:auto}.signature-option .store-add,.signature-option .quantity-control{width:76px;height:32px}.size-heading{width:172px}.simple-item,.craver-item{grid-template-columns:minmax(100px,1fr) 74px 64px}.simple-item .single-price{padding-right:5px;font-size:13px}}
 .signature-item{grid-template-columns:minmax(230px,1fr) 110px 82px}.signature-price{height:72px;border-left:1px solid #edf0ec;display:flex;flex-direction:column;align-items:center;justify-content:center}.signature-price strong{font-size:15px;color:#303632}.signature-price span{font-size:9px;color:#969d97;margin-top:4px}.signature-item .store-add,.signature-item .quantity-control{width:82px}@media(max-width:700px){.signature-item{grid-template-columns:minmax(150px,1fr) 90px 78px}.signature-price{height:68px}.signature-item .store-add,.signature-item .quantity-control{width:70px}}@media(max-width:520px){.signature-item{grid-template-columns:minmax(110px,1fr) 72px 64px}.signature-price strong{font-size:13px}.signature-item .store-add,.signature-item .quantity-control{width:64px}}
 .signature-item{padding-left:0;padding-right:0}.signature-item .item-copy{text-align:left;padding-left:0;padding-right:24px}.signature-item .item-copy h3,.signature-item .item-copy p{text-align:left;margin-left:0}.signature-item .item-copy h3{font-size:15px}.signature-item .item-copy p{line-height:1.35}
+
+@media(max-width:700px){
+  .store-item{
+    padding-right:4px;
+  }
+  .store-add,.quantity-control{
+    width:92px;
+    justify-self:end;
+  }
+  .quantity-control{
+    grid-template-columns:31px 30px 31px;
+  }
+  .signature-item{
+    grid-template-columns:minmax(120px,1fr) 72px 92px;
+  }
+  .signature-item .store-add,.signature-item .quantity-control{
+    width:92px;
+  }
+  .simple-item,.craver-item{
+    grid-template-columns:minmax(100px,1fr) 72px 92px;
+  }
+}
+
+@media(max-width:520px){
+  .full-menu{padding-left:10px;padding-right:10px}
+  .store-item{
+    padding-right:2px;
+  }
+  .signature-item{
+    grid-template-columns:minmax(92px,1fr) 62px 92px;
+  }
+  .simple-item,.craver-item{
+    grid-template-columns:minmax(92px,1fr) 62px 92px;
+  }
+  .signature-item .store-add,.signature-item .quantity-control,
+  .simple-item .store-add,.simple-item .quantity-control,
+  .craver-item .store-add,.craver-item .quantity-control{
+    width:92px;
+  }
+  .quantity-control{
+    width:92px;
+    grid-template-columns:31px 30px 31px;
+  }
+}
+
+@media(max-width:700px){
+  .signature-item .signature-price,
+  .simple-item .single-price,
+  .craver-item .single-price,
+  .signature-item .store-add,
+  .signature-item .quantity-control,
+  .simple-item .store-add,
+  .simple-item .quantity-control,
+  .craver-item .store-add,
+  .craver-item .quantity-control{
+    transform:translateX(-14px);
+  }
+}
+
+.signature-item .store-add,
+.signature-item .quantity-control{
+  transform:translateX(-24px);
+}
+
+.signature-item .signature-price{
+  transform:translateX(-24px);
+}

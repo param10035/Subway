@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { ChevronDown, Minus, Plus, Search, ShoppingBag, X } from 'lucide-react'
+import './Cart.css'
 
 const menuSections = [
   {
@@ -69,11 +70,15 @@ const menuSections = [
 export default function SubwayMenu() {
   const [active, setActive] = useState('Signature Subs')
   const [search, setSearch] = useState('')
-  const [vegOnly, setVegOnly] = useState(false)
+  const [dietFilter, setDietFilter] = useState('all')
   const [service, setService] = useState('Dine In')
   const [serviceOpen, setServiceOpen] = useState(false)
   const [cart, setCart] = useState({})
   const [showAll, setShowAll] = useState(true)
+  const [cartOpen, setCartOpen] = useState(false)
+  const [payment, setPayment] = useState('UPI')
+  const [upiApp, setUpiApp] = useState('Paytm')
+  const [cardDetails, setCardDetails] = useState({ name: '', number: '', expiry: '', cvv: '' })
 
   const filteredSections = useMemo(() => {
     const sections = showAll ? menuSections : menuSections.filter((section) => section.name === active)
@@ -82,14 +87,15 @@ export default function SubwayMenu() {
       groups: section.groups.map((group) => ({
         ...group,
         items: group.items.filter(([name, description]) => {
-          if (vegOnly && !group.veg) return false
+          if (dietFilter === 'veg' && !group.veg) return false
+          if (dietFilter === 'nonveg' && group.veg) return false
           if (!search.trim()) return true
           const query = search.toLowerCase()
           return name.toLowerCase().includes(query) || description.toLowerCase().includes(query)
         }),
       })).filter((group) => group.items.length > 0),
     })).filter((section) => section.groups.length > 0)
-  }, [active, search, vegOnly, showAll])
+  }, [active, search, dietFilter, showAll])
 
   const findItem = (cartKey) => {
     const [name, size] = cartKey.split('||')
@@ -101,17 +107,36 @@ export default function SubwayMenu() {
   const cartTotal = Object.entries(cart).reduce((sum, [cartKey, quantity]) => sum + findItem(cartKey) * quantity, 0)
   const add = (cartKey) => setCart((current) => ({ ...current, [cartKey]: (current[cartKey] || 0) + 1 }))
   const remove = (cartKey) => setCart((current) => { const next = { ...current }; if ((next[cartKey] || 0) <= 1) delete next[cartKey]; else next[cartKey] -= 1; return next })
+  const placeOrder = () => {
+    if (payment === 'Card') {
+      const cardNumber = cardDetails.number.replace(/\s/g, '')
+      if (!cardDetails.name.trim() || cardNumber.length < 16 || !/^\d{2}\/\d{2}$/.test(cardDetails.expiry) || cardDetails.cvv.length < 3) {
+        alert('Please enter complete and valid card details.')
+        return
+      }
+    }
+    alert(`Order placed! Payment: ${payment}${payment === 'UPI' ? ` (${upiApp})` : ''}. Total: ₹${cartTotal}`)
+    setCardDetails({ name: '', number: '', expiry: '', cvv: '' })
+    setCart({})
+    setCartOpen(false)
+  }
 
   return (
     <main className="dotpe-store">
       <header className="store-header">
         <div className="store-brand"><div className="dotpe-logo"><span>SUB</span><b>WAY</b></div><div><strong>Manipal University Jaipur</strong><small>MUJ Campus Store</small></div></div>
-        <div className="service-wrap"><button className="service-button" onClick={() => setServiceOpen(!serviceOpen)}>{service}<ChevronDown size={16} /></button>{serviceOpen && <div className="service-menu"><button onClick={() => { setService('Dine In'); setServiceOpen(false) }}>Dine In</button><button onClick={() => { setService('Takeaway'); setServiceOpen(false) }}>Takeaway</button></div>}</div>
+        <div className="header-actions">
+          <div className="service-wrap"><button className="service-button" onClick={() => setServiceOpen(!serviceOpen)}>{service}<ChevronDown size={16} /></button>{serviceOpen && <div className="service-menu"><button onClick={() => { setService('Dine In'); setServiceOpen(false) }}>Dine In</button><button onClick={() => { setService('Takeaway'); setServiceOpen(false) }}>Takeaway</button></div>}</div>
+          <button className="header-cart" aria-label={`${cartCount} items in cart`} onClick={() => cartCount > 0 && setCartOpen(true)}><ShoppingBag size={19} /><span>{cartCount}</span></button>
+        </div>
       </header>
 
       <div className="store-tools">
         <label className="store-search"><Search size={19} /><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search for items…" />{search && <button aria-label="Clear search" onClick={() => setSearch('')}><X size={16} /></button>}</label>
-        <button className={`veg-toggle ${vegOnly ? 'active' : ''}`} onClick={() => setVegOnly(!vegOnly)}><span /><b>Veg only</b></button>
+        <div className="diet-filter" aria-label="Diet filter">
+          <button className={dietFilter === 'veg' ? 'active veg-filter' : 'veg-filter'} onClick={() => setDietFilter(dietFilter === 'veg' ? 'all' : 'veg')}><span /><b>Veg only</b></button>
+          <button className={dietFilter === 'nonveg' ? 'active nonveg-filter' : 'nonveg-filter'} onClick={() => setDietFilter(dietFilter === 'nonveg' ? 'all' : 'nonveg')}><i /><b>Non-veg only</b></button>
+        </div>
       </div>
 
       {!search && <nav className="category-strip"><button className={showAll ? 'active' : ''} onClick={() => setShowAll(true)}>All items</button>{menuSections.map((section) => <button key={section.name} className={!showAll && active === section.name ? 'active' : ''} onClick={() => { setActive(section.name); setShowAll(false) }}>{section.name}</button>)}</nav>}
@@ -144,10 +169,37 @@ export default function SubwayMenu() {
             </div>
           </div>)}
         </section>)}
-        {filteredSections.length === 0 && <div className="empty-menu"><h2>No matching items</h2><p>Try another search or turn off the veg filter.</p></div>}
+        {filteredSections.length === 0 && <div className="empty-menu"><h2>No matching items</h2><p>Try another search or change the diet filter.</p></div>}
       </section>
 
-      {cartCount > 0 && <aside className="cart-bar"><div><ShoppingBag size={20} /><span><b>{cartCount} {cartCount === 1 ? 'item' : 'items'}</b><small>Added to your order</small></span></div><button>View cart <strong>₹{cartTotal}</strong></button></aside>}
+      {cartOpen && <div className="cart-overlay" role="dialog" aria-modal="true" aria-label="Your cart">
+        <div className="cart-panel">
+          <div className="cart-header"><div><p>YOUR ORDER</p><h2>Cart</h2></div><button aria-label="Close cart" onClick={() => { setCardDetails({ name: '', number: '', expiry: '', cvv: '' }); setCartOpen(false) }}><X size={20} /></button></div>
+          <div className="cart-items">
+            {Object.entries(cart).map(([cartKey, quantity]) => {
+              const [name, size] = cartKey.split('||')
+              return <div className="cart-item" key={cartKey}><div><strong>{name}</strong><small>{size}</small></div><div className="cart-item-controls"><button aria-label={`Remove ${name}`} onClick={() => remove(cartKey)}><Minus size={14} /></button><span>{quantity}</span><button aria-label={`Add ${name}`} onClick={() => add(cartKey)}><Plus size={14} /></button></div><strong>₹{findItem(cartKey) * quantity}</strong></div>
+            })}
+          </div>
+          <div className="payment-section"><h3>Payment method</h3><div className="payment-options">
+            {['UPI', 'Card'].map((method) => <button key={method} className={payment === method ? 'active' : ''} onClick={() => { setPayment(method); if (method === 'UPI') setCardDetails({ name: '', number: '', expiry: '', cvv: '' }) }}><span>{payment === method ? '✓' : ''}</span>{method}</button>)}
+          </div>
+          {payment === 'UPI' && <div className="upi-section"><p>Select UPI app</p><div className="upi-apps">
+            {['Paytm', 'Google Pay', 'PhonePe', 'BHIM'].map((app) => <button key={app} className={upiApp === app ? 'active' : ''} onClick={() => setUpiApp(app)}>{app}</button>)}
+          </div></div>}
+          {payment === 'Card' && <div className="card-section">
+            <label>Cardholder name<input type="text" autoComplete="off" value={cardDetails.name} onChange={(event) => setCardDetails((current) => ({ ...current, name: event.target.value }))} placeholder="Name on card" /></label>
+            <label>Card number<input type="text" inputMode="numeric" autoComplete="off" maxLength={19} value={cardDetails.number} onChange={(event) => setCardDetails((current) => ({ ...current, number: event.target.value.replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim() }))} placeholder="1234 5678 9012 3456" /></label>
+            <div className="card-row"><label>Expiry<input type="text" inputMode="numeric" autoComplete="off" maxLength={5} value={cardDetails.expiry} onChange={(event) => setCardDetails((current) => ({ ...current, expiry: event.target.value.replace(/\D/g, '').replace(/^(\d{2})(\d)/, '$1/$2') }))} placeholder="MM/YY" /></label><label>CVV<input type="password" inputMode="numeric" autoComplete="off" maxLength={4} value={cardDetails.cvv} onChange={(event) => setCardDetails((current) => ({ ...current, cvv: event.target.value.replace(/\D/g, '') }))} placeholder="CVV" /></label></div>
+            <small className="payment-note">Card details are used only for this payment and are not saved.</small>
+          </div>}
+          </div>
+          <div className="cart-summary"><span>Subtotal</span><strong>₹{cartTotal}</strong></div>
+          <button className="checkout-button" onClick={placeOrder}>Place order · ₹{cartTotal}</button>
+        </div>
+      </div>}
+
+      {cartCount > 0 && <aside className="cart-bar"><div><ShoppingBag size={20} /><span><b>{cartCount} {cartCount === 1 ? 'item' : 'items'}</b><small>Added to your order</small></span></div><button onClick={() => setCartOpen(true)}>View cart <strong>₹{cartTotal}</strong></button></aside>}
       <footer className="store-footer"><div className="footer-logo"><span>SUB</span><b>WAY</b></div><p>SUBWAY® is a registered trademark. Menu and prices may vary by location.</p><strong>Shop No. 1, Hostel Block B-1<br />Manipal University Jaipur, Rajasthan 303007</strong></footer>
     </main>
   )
