@@ -185,7 +185,12 @@ export default function SubwayMenu() {
             {['UPI', 'Card'].map((method) => <button key={method} className={payment === method ? 'active' : ''} onClick={() => { setPayment(method); if (method === 'UPI') setCardDetails({ name: '', number: '', expiry: '', cvv: '' }) }}><span>{payment === method ? '✓' : ''}</span>{method}</button>)}
           </div>
           {payment === 'UPI' && <div className="upi-section"><p>Select UPI app</p><div className="upi-apps">
-            {['Paytm', 'Google Pay', 'PhonePe', 'BHIM'].map((app) => <button key={app} className={upiApp === app ? 'active' : ''} onClick={() => setUpiApp(app)}>{app}</button>)}
+            {[
+              { name: 'Paytm', logo: '/paytm-logo.png', className: 'paytm-logo' },
+              { name: 'Google Pay', logo: '/google-pay-logo.png', className: 'googlepay-logo' },
+              { name: 'PhonePe', logo: '/phonepe-logo.png', className: 'phonepe-logo' },
+              { name: 'BHIM', logo: '/bhim.svg', className: 'bhim-logo' },
+            ].map((app) => <button key={app.name} className={upiApp === app.name ? 'active' : ''} onClick={() => setUpiApp(app.name)}><img className={`upi-app-logo ${app.className}`} src={app.logo} alt="" /><span>{app.name}</span></button>)}
           </div></div>}
           {payment === 'Card' && <div className="card-section">
             <label>Cardholder name<input type="text" autoComplete="off" value={cardDetails.name} onChange={(event) => setCardDetails((current) => ({ ...current, name: event.target.value }))} placeholder="Name on card" /></label>

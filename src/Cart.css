@@ -33,8 +33,13 @@
 .upi-section{padding-top:14px}
 .upi-section p{margin:0 0 8px;font-size:12px;font-weight:700;color:#606760}
 .upi-apps{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
-.upi-apps button{height:42px;border:1px solid #dde3dc;border-radius:7px;background:#fff;color:#606760;font-size:12px;font-weight:700}
+.upi-apps button{height:48px;border:1px solid #dde3dc;border-radius:7px;background:#fff;color:#606760;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px}
 .upi-apps button.active{border-color:#008b58;background:#f0faf4;color:#008b58}
+.upi-app-logo{width:32px;height:32px;border-radius:7px;flex-shrink:0;object-fit:cover;background:#fff;border:1px solid #e8ebe6}
+.paytm-logo{object-fit:cover}
+.googlepay-logo{background:#fff}
+.phonepe-logo{background:#5f259f;border-color:#5f259f;padding:7px}
+.bhim-logo{width:38px;object-fit:contain;padding:3px;background:#fff}
 .card-section{padding-top:14px;display:grid;gap:10px}
 .card-section label{display:flex;flex-direction:column;gap:6px;font-size:11px;font-weight:700;color:#606760}
 .card-section input{height:42px;border:1px solid #dde3dc;border-radius:7px;background:#fff;color:#303632;padding:0 12px;font-size:13px;outline:none}
